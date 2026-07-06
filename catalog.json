@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Mutual Non-Disclosure Agreement (Cover Page)",
+    "description": "Cover page for the Common Paper Mutual NDA, used to fill in the purpose, term, and governing law before incorporating the Standard Terms.",
+    "filename": "templates/mutual-nda-coverpage.md"
+  },
+  {
+    "name": "Mutual Non-Disclosure Agreement (Standard Terms)",
+    "description": "Standard terms for a mutual non-disclosure agreement covering the use, protection, and return of confidential information exchanged between two parties.",
+    "filename": "templates/mutual-nda-standard-terms.md"
+  },
+  {
+    "name": "Cloud Service Agreement",
+    "description": "Standard terms for a SaaS/cloud service subscription, covering access and use, support, payment, data privacy, warranties, liability, and termination.",
+    "filename": "templates/cloud-service-agreement.md"
+  },
+  {
+    "name": "Design Partner Agreement",
+    "description": "Standard terms for granting an early-access design partner use of a product in exchange for feedback that helps develop and improve it.",
+    "filename": "templates/design-partner-agreement.md"
+  },
+  {
+    "name": "Service Level Agreement",
+    "description": "Standard terms defining uptime and support response time targets for a cloud service, along with the service credits and remedies available if targets are missed.",
+    "filename": "templates/service-level-agreement.md"
+  },
+  {
+    "name": "Professional Services Agreement",
+    "description": "Standard terms for providing professional services under one or more statements of work, covering deliverables, intellectual property, payment, and liability.",
+    "filename": "templates/professional-services-agreement.md"
+  },
+  {
+    "name": "Data Processing Agreement",
+    "description": "Standard terms governing the processing of personal data between a controller/processor and a processor/subprocessor, including international data transfer mechanisms and security incident response.",
+    "filename": "templates/data-processing-agreement.md"
+  },
+  {
+    "name": "Software License Agreement",
+    "description": "Standard terms for licensing on-premises or installed software, covering license grants, restrictions, updates, warranties, and liability.",
+    "filename": "templates/software-license-agreement.md"
+  },
+  {
+    "name": "Partnership Agreement",
+    "description": "Standard terms for a business partnership arrangement between two companies, including trademark licensing, fees, and confidentiality.",
+    "filename": "templates/partnership-agreement.md"
+  },
+  {
+    "name": "Pilot Agreement",
+    "description": "Standard terms for a time-limited trial or evaluation of a product before entering into a longer-term definitive agreement.",
+    "filename": "templates/pilot-agreement.md"
+  },
+  {
+    "name": "Business Associate Agreement",
+    "description": "Standard terms required under HIPAA governing a business associate's use and protection of protected health information (PHI) on behalf of a covered entity.",
+    "filename": "templates/business-associate-agreement.md"
+  },
+  {
+    "name": "AI Addendum",
+    "description": "Standard terms supplementing a product agreement to govern the use of AI/ML features, including input/output ownership, model training restrictions, and AI-specific disclaimers.",
+    "filename": "templates/ai-addendum.md"
+  }
+]

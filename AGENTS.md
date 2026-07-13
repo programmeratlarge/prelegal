@@ -56,7 +56,7 @@ Backend available at http://localhost:8000
 
 ## Implementation status
 
-As of 2026-07-12 (PL-6, all document types):
+As of 2026-07-13 (PL-6 merged via PR #7):
 
 **Implemented**
 - **Document registry** (PL-6): `registry/documents.json` is the single source of truth for all 11 document types — party roles, fields (kinds: text/date/money/choice/term), per-field LLM guidance, and template span bindings. Loaded by the backend at runtime (`app/registry/`) and by the frontend at build time (`lib/registry/`). Registry↔template drift is blocked by `tests/test_registry.py` (every `*_link` span in every template must be claimed by exactly one role/field, and vice versa).
@@ -66,7 +66,7 @@ As of 2026-07-12 (PL-6, all document types):
 - **Frontend serving**: Next.js is built as a static export (`output: "export"`, `trailingSlash: true`) and served by FastAPI via a `StaticFiles` mount registered after the API routes. `/login/` page (signup/signin) gates the NDA creator through the client-side `AuthGate` component.
 - **Docker**: multi-stage root `Dockerfile` (Node builds the static export → Python/uv runtime), single image, port 8000. Root `.env` is passed via `--env-file`.
 - **Scripts** (`scripts/`): the six start/stop scripts listed above (start always rebuilds the image), plus `smoke-test.sh`/`smoke-test.ps1` which build, run, curl-verify, and tear down.
-- **Tests**: `backend/tests/` — 111 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over, and registry↔template integrity. Run with `uv run pytest` from `backend/`.
+- **Tests**: `backend/tests/` — 126 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over validation, and registry↔template↔catalog integrity. Run with `uv run pytest` from `backend/`.
 
 **Not yet implemented**
 - Document persistence (no documents table; nothing is saved server-side).

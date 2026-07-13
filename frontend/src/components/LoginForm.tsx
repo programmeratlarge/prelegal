@@ -5,6 +5,7 @@ import { AuthError, me, signin, signup } from "@/lib/authClient";
 import BrandMark from "./BrandMark";
 import Button from "./ui/Button";
 import { Field, inputClass } from "./ui/Field";
+import LoadingState from "./ui/LoadingState";
 
 type Mode = "signin" | "signup";
 
@@ -80,11 +81,7 @@ export default function LoginForm() {
   }
 
   if (checkingSession) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center text-sm text-brand-gray">
-        Loading…
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (

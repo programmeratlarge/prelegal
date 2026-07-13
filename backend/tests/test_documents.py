@@ -78,6 +78,26 @@ def test_list_is_scoped_to_current_user_and_ordered(client):
     assert client.get("/api/documents").json() == []
 
 
+def test_update_bumps_document_to_top_of_list(client):
+    signed_in(client)
+    first_id = create(client)["id"]
+    second_id = create(client, documentType="pilot-agreement", form={})["id"]
+
+    # Backdate the second document so the first is newest, then update the
+    # second and assert it returns to the top (updated_at DESC ordering).
+    db = client.app.state.db
+    with db.lock:
+        db.connection.execute(
+            "UPDATE documents SET updated_at = '2000-01-01 00:00:00' WHERE id = ?",
+            (second_id,),
+        )
+        db.connection.commit()
+    assert [d["id"] for d in client.get("/api/documents").json()] == [first_id, second_id]
+
+    client.put(f"/api/documents/{second_id}", json=save_payload())
+    assert [d["id"] for d in client.get("/api/documents").json()] == [second_id, first_id]
+
+
 def test_get_returns_full_snapshot(client):
     doc_id = create(signed_in(client))["id"]
     body = client.get(f"/api/documents/{doc_id}").json()

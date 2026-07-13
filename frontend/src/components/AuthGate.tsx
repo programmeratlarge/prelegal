@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AuthUser, me } from "@/lib/authClient";
 import { AuthUserContext } from "@/lib/authContext";
+import LoadingState from "./ui/LoadingState";
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -25,11 +26,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (user === null) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center text-sm text-brand-gray">
-        Loading…
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return <AuthUserContext.Provider value={user}>{children}</AuthUserContext.Provider>;

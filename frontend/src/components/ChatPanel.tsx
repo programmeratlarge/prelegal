@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChatMessage } from "@/lib/chatClient";
+import Button from "./ui/Button";
+import { inputClass } from "./ui/Field";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -63,19 +65,15 @@ export default function ChatPanel({ messages, busy, error, onSend }: ChatPanelPr
 
       <form onSubmit={handleSubmit} className="flex gap-2 border-t border-slate-200 p-3">
         <input
-          className="w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-brand-blue focus:outline-none focus:ring-1 focus:ring-brand-blue"
+          className={inputClass}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your answer…"
           disabled={busy}
         />
-        <button
-          type="submit"
-          disabled={busy || !input.trim()}
-          className="rounded-md bg-brand-purple px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <Button type="submit" disabled={busy || !input.trim()}>
           Send
-        </button>
+        </Button>
       </form>
     </div>
   );

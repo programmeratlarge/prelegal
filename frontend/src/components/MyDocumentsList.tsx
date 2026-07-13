@@ -28,12 +28,17 @@ export default function MyDocumentsList() {
   async function handleDelete(doc: DocumentSummary) {
     if (!window.confirm(`Delete "${doc.title}"? This can't be undone.`)) return;
     setDeletingId(doc.id);
-    const previous = documents;
-    setDocuments(previous.filter((d) => d.id !== doc.id));
+    setDocuments((current) => current.filter((d) => d.id !== doc.id));
     try {
       await deleteDocument(doc.id);
     } catch {
-      setDocuments(previous);
+      // Re-insert only this document (in server order) — restoring a whole
+      // prior snapshot could resurrect rows another in-flight delete removed.
+      setDocuments((current) =>
+        [...current, doc].sort(
+          (a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.id - a.id
+        )
+      );
     } finally {
       setDeletingId(null);
     }

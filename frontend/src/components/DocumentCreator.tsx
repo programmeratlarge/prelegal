@@ -11,6 +11,9 @@ import { SaveStatus, useDocumentAutosave } from "@/lib/useDocumentAutosave";
 import ChatPanel from "./ChatPanel";
 import DocumentForm from "./DocumentForm";
 import DocumentPreview from "./DocumentPreview";
+import Button from "./ui/Button";
+import { inputClass } from "./ui/Field";
+import LoadingState from "./ui/LoadingState";
 
 export interface DocumentBundle {
   definition: DocumentDefinition;
@@ -174,11 +177,7 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
   }
 
   if (resuming) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center text-sm text-brand-gray">
-        Loading your document…
-      </div>
-    );
+    return <LoadingState>Loading your document…</LoadingState>;
   }
 
   return (
@@ -188,7 +187,7 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
           <h1 className="shrink-0 text-xl font-bold text-brand-navy">Document Creator</h1>
           <select
             aria-label="Document type"
-            className="w-full min-w-0 rounded-md border border-slate-300 px-2 py-1.5 text-sm shadow-sm focus:border-brand-blue focus:outline-none focus:ring-1 focus:ring-brand-blue disabled:cursor-not-allowed disabled:opacity-60"
+            className={`${inputClass} min-w-0 disabled:cursor-not-allowed disabled:opacity-60`}
             value={documentType ?? ""}
             onChange={(e) => e.target.value && switchDocument(e.target.value)}
             // Disabled while a chat request is in flight: the response applies
@@ -227,14 +226,13 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
         ) : (
           <DocumentForm definition={active.definition} value={form} onChange={handleFormChange} />
         )}
-        <button
-          type="button"
+        <Button
           onClick={handleDownload}
           disabled={downloading || !active}
-          className="mt-4 w-full rounded-md bg-brand-purple px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-4 w-full"
         >
           {downloading ? "Preparing PDF…" : "Download PDF"}
-        </button>
+        </Button>
       </div>
       <div>
         {assembled ? (

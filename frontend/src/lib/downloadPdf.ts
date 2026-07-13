@@ -3,7 +3,7 @@
  * Runs client-side only (canvas/DOM APIs), so callers must dynamic-import
  * this module rather than importing it at the top of a client component.
  */
-export async function downloadNdaPdf(element: HTMLElement, filename: string): Promise<void> {
+export async function downloadPdf(element: HTMLElement, filename: string): Promise<void> {
   const html2canvas = (await import("html2canvas-pro")).default;
   const { jsPDF } = await import("jspdf");
 

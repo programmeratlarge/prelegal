@@ -68,3 +68,6 @@ Thumbs.db
 # --- Logs ---
 *.log
 logs/
+
+# FastAPI-served frontend build (populated by Docker / local testing)
+backend/static/

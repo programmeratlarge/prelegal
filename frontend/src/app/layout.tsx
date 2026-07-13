@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mutual NDA Creator",
-  description: "Fill in a form to generate a completed Common Paper Mutual NDA and download it as a PDF.",
+  title: {
+    default: "Prelegal",
+    template: "%s · Prelegal",
+  },
+  description:
+    "Draft legal agreements through AI chat — NDAs, cloud service agreements, DPAs, and more — with a live preview and PDF download.",
 };
 
 export default function RootLayout({
@@ -27,7 +32,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <div className="flex-1 flex flex-col">{children}</div>
+        <Footer />
+      </body>
     </html>
   );
 }

@@ -12,7 +12,7 @@ function renderSegments(segments: InlineSegment[]) {
           <a
             key={index}
             href={segment.href}
-            className="text-blue-700 underline"
+            className="text-brand-blue underline"
             target="_blank"
             rel="noreferrer"
           >
@@ -21,7 +21,7 @@ function renderSegments(segments: InlineSegment[]) {
         );
       case "filled":
         return (
-          <span key={index} className="rounded bg-amber-100 px-1 font-medium text-amber-900">
+          <span key={index} className="rounded bg-brand-yellow/15 px-1 font-medium text-amber-900">
             {segment.value}
           </span>
         );
@@ -100,10 +100,18 @@ const DocumentPreview = forwardRef<HTMLDivElement, DocumentPreviewProps>(
         ref={ref}
         className="mx-auto max-w-3xl rounded-lg bg-white p-8 shadow-sm print:shadow-none"
       >
-        <h1 className="text-2xl font-bold text-slate-900">{document.title}</h1>
+        {/* Rendered inside the ref'd node on purpose: the PDF download
+            rasterizes this element, so the draft notice travels with it. */}
+        <div className="mb-6 break-inside-avoid rounded-md border-l-4 border-brand-yellow bg-brand-yellow/10 px-3 py-2 text-xs text-brand-navy">
+          <span className="font-bold uppercase tracking-wide">Draft.</span> This document is a
+          draft, is not legal advice, and is subject to review by qualified legal counsel before
+          use.
+        </div>
+
+        <h1 className="text-2xl font-bold text-brand-navy">{document.title}</h1>
 
         <section className="break-inside-avoid mt-6 space-y-3">
-          <h2 className="text-lg font-semibold text-slate-900">Cover Page</h2>
+          <h2 className="text-lg font-semibold text-brand-navy">Cover Page</h2>
           <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {document.coverFields.map((field) => (
               <div key={field.id}>
@@ -119,7 +127,7 @@ const DocumentPreview = forwardRef<HTMLDivElement, DocumentPreviewProps>(
         </section>
 
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-slate-900">Standard Terms</h2>
+          <h2 className="text-lg font-semibold text-brand-navy">Standard Terms</h2>
           <div className="mt-3">
             {document.sections.map((section) => (
               <Section key={section.key} section={section} />

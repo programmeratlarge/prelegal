@@ -21,3 +21,9 @@ def client(tmp_path):
     app = create_app(settings)
     with TestClient(app) as test_client:
         yield test_client
+
+
+def signed_in(client, email: str = "user@example.com"):
+    """Sign up a user on this client; TestClient persists the session cookie."""
+    client.post("/api/signup", json={"email": email, "password": "correct-horse"})
+    return client

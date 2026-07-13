@@ -22,3 +22,15 @@ def test_api_routes_are_not_shadowed_by_static_mount(client):
     response = client.get("/api/me")
     assert response.status_code == 401
     assert response.headers["content-type"].startswith("application/json")
+
+
+def test_documents_api_is_not_shadowed_by_static_mount(client):
+    response = client.get("/api/documents")
+    assert response.status_code == 401
+    assert response.headers["content-type"].startswith("application/json")
+
+
+def test_documents_route_serves_static_page(client):
+    response = client.get("/documents/")
+    assert response.status_code == 200
+    assert "FIXTURE_DOCUMENTS" in response.text

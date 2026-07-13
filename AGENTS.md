@@ -56,7 +56,7 @@ Backend available at http://localhost:8000
 
 ## Implementation status
 
-As of 2026-07-13 (PL-7, persistence & polish):
+As of 2026-07-13 (PL-7 merged via PR #8):
 
 **Implemented**
 - **Document persistence** (PL-7): `documents` table (`app/db.py`) + CRUD router (`app/routers/documents.py`) storing full drafting snapshots (documentType + flat form + chat transcript) per user; titles are derived at read time (`app/documents.py`), never stored. The frontend auto-saves (single-flight, coalesce-to-latest hook `lib/useDocumentAutosave.ts`: immediate on chat turns/type switches, debounced on form edits), `/documents/` lists drafts with open/delete, and `/?doc=<id>` resumes full editing including chat history. Unknown and foreign document ids both 404 (no existence leak). Chat (`/api/chat`) remains fully stateless — the client is the only save path.
@@ -68,5 +68,5 @@ As of 2026-07-13 (PL-7, persistence & polish):
 - **Frontend serving**: Next.js is built as a static export (`output: "export"`, `trailingSlash: true`) and served by FastAPI via a `StaticFiles` mount registered after the API routes. `/login/` page (signup/signin) gates the NDA creator through the client-side `AuthGate` component.
 - **Docker**: multi-stage root `Dockerfile` (Node builds the static export → Python/uv runtime), single image, port 8000. Root `.env` is passed via `--env-file`.
 - **Scripts** (`scripts/`): the six start/stop scripts listed above (start always rebuilds the image), plus `smoke-test.sh`/`smoke-test.ps1` which build, run, curl-verify, and tear down.
-- **Tests**: `backend/tests/` — 155 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over validation, registry↔template↔catalog integrity, and the documents API (CRUD, ownership isolation, derived titles, per-type round-trips). Run with `uv run pytest` from `backend/`.
+- **Tests**: `backend/tests/` — 156 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over validation, registry↔template↔catalog integrity, and the documents API (CRUD, ownership isolation, derived titles, list ordering, per-type round-trips). Run with `uv run pytest` from `backend/`.
 

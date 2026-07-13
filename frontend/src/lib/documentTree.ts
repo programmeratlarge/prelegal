@@ -62,11 +62,14 @@ export function parseDocumentBody(markdown: string): ParsedDocument {
       continue;
     }
 
-    const depth = Math.floor(match[1].length / 4);
+    // Clamp against skipped levels (a malformed 0->2 indent jump) so a
+    // template typo degrades to shallower nesting instead of crashing.
+    const depth = Math.min(Math.floor(match[1].length / 4), stack.length);
     const { heading, body } = splitHeading(match[3].trim());
-    const siblings = depth === 0 ? sections : (stack[depth - 1]?.children ?? sections);
+    const parent = depth > 0 ? stack[depth - 1] : null;
+    const siblings = parent ? parent.children : sections;
     const section: DocumentSection = {
-      key: depth === 0 ? String(sections.length) : `${stack[depth - 1].key}.${siblings.length}`,
+      key: parent ? `${parent.key}.${siblings.length}` : String(sections.length),
       marker: match[2],
       depth,
       heading,

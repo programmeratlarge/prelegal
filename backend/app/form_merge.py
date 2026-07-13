@@ -18,23 +18,47 @@ from app.registry.models import PARTY_SUBFIELDS, DocumentDefinition, FieldDefini
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
+def _valid_for_field(field: FieldDefinition, key: str, value: str) -> bool:
+    """Whether a value is acceptable for the form key of a field. Guards both
+    LLM output and values carried across a document switch (a shared field id
+    is guaranteed kind-compatible by test_registry, but the value may still be
+    stale free text, a foreign term variant, etc.)."""
+    if field.kind == "date":
+        return bool(DATE_RE.fullmatch(value))
+    if field.kind == "choice":
+        return value in field.options
+    if field.kind == "term":
+        if key.endswith(".variant"):
+            return any(variant.id == value for variant in field.variants)
+        return value.isdigit() and int(value) >= 1
+    return True
+
+
 def carry_over(old_form: dict[str, str], target: DocumentDefinition) -> dict[str, str]:
     """Start a switched-to document from its defaults, keeping any values the
     old form already collected under the same key (party info, shared field
     ids like effectiveDate/governingLaw)."""
     form = target.default_form()
+    fields_by_key = {
+        key: field
+        for field in target.fields
+        for key in ([f"{field.id}.variant", f"{field.id}.years"] if field.kind == "term" else [field.id])
+    }
     for key in form:
         value = old_form.get(key, "")
-        if value:
+        field = fields_by_key.get(key)
+        if value and (field is None or _valid_for_field(field, key, value)):
             form[key] = value
     return form
 
 
 def _merge_term(form: dict[str, str], field: FieldDefinition, patch: BaseModel) -> None:
-    if patch.variant is not None:
-        form[f"{field.id}.variant"] = patch.variant
-    if patch.years is not None:
-        form[f"{field.id}.years"] = str(max(1, int(patch.years)))
+    variant = getattr(patch, "variant", None)
+    if variant is not None and any(v.id == variant for v in field.variants):
+        form[f"{field.id}.variant"] = variant
+    years = getattr(patch, "years", None)
+    if years is not None:
+        form[f"{field.id}.years"] = str(max(1, int(years)))
 
 
 def _merge_party(form: dict[str, str], role_id: str, patch: BaseModel) -> None:
@@ -64,11 +88,9 @@ def merge_patch(
         if value is None:
             continue
         if field.kind == "term":
-            _merge_term(merged, field, value)
-        elif field.kind == "date":
-            if DATE_RE.fullmatch(value):
-                merged[field.id] = value
-        else:
+            if isinstance(value, BaseModel):
+                _merge_term(merged, field, value)
+        elif isinstance(value, str) and _valid_for_field(field, field.id, value):
             merged[field.id] = value
 
     return merged

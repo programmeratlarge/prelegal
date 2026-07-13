@@ -47,6 +47,20 @@ def test_document_ids_are_unique():
     assert len(ids) == len(set(ids))
 
 
+def test_registry_covers_every_catalog_entry():
+    """catalog.json is the product-copy catalog (see AGENTS.md); every
+    template it lists must be reachable through a registry entry."""
+    import json
+
+    catalog = json.loads((REGISTRY_PATH.parent.parent / "catalog.json").read_text("utf-8"))
+    catalog_files = {entry["filename"].removeprefix("templates/") for entry in catalog}
+    registry_files = {definition.templateFile for definition in all_documents}
+    # The NDA cover page is folded into the mutual-nda entry rather than
+    # rendered from its own template file.
+    uncovered = catalog_files - registry_files - {"mutual-nda-coverpage.md"}
+    assert not uncovered, f"catalog entries missing from registry: {sorted(uncovered)}"
+
+
 @pytest.mark.parametrize("definition", all_documents, ids=lambda d: d.id)
 def test_template_file_exists(definition):
     assert (TEMPLATES_DIR / definition.templateFile).is_file()
@@ -80,6 +94,29 @@ def test_field_ids_are_unique_and_shapes_are_complete(definition):
             assert field.options, f"{field.id}: choice field without options"
         if field.kind == "term":
             assert field.variants, f"{field.id}: term field without variants"
+
+
+def test_shared_field_ids_have_consistent_kinds():
+    """carry_over copies values between documents by field id, so the same id
+    must mean the same kind (and, for choices, the same options) everywhere."""
+    seen: dict[str, tuple] = {}
+    for definition in all_documents:
+        for field in definition.fields:
+            shape = (field.kind, tuple(field.options))
+            if field.id in seen:
+                assert seen[field.id] == shape, (
+                    f"{field.id} is {shape} in {definition.id} but "
+                    f"{seen[field.id]} elsewhere"
+                )
+            seen[field.id] = shape
+
+
+@pytest.mark.parametrize("definition", all_documents, ids=lambda d: d.id)
+def test_template_span_tags_are_balanced(definition):
+    """A stray </span> would leak literal markup into the rendered document
+    (the substitution pass only rewrites well-formed spans)."""
+    text = (TEMPLATES_DIR / definition.templateFile).read_text("utf-8")
+    assert text.count("<span") == text.count("</span>")
 
 
 @pytest.mark.parametrize("definition", all_documents, ids=lambda d: d.id)

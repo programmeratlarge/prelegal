@@ -114,9 +114,13 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
           <h1 className="shrink-0 text-xl font-bold text-[#032147]">Document Creator</h1>
           <select
             aria-label="Document type"
-            className="w-full min-w-0 rounded-md border border-slate-300 px-2 py-1.5 text-sm shadow-sm focus:border-[#209dd7] focus:outline-none focus:ring-1 focus:ring-[#209dd7]"
+            className="w-full min-w-0 rounded-md border border-slate-300 px-2 py-1.5 text-sm shadow-sm focus:border-[#209dd7] focus:outline-none focus:ring-1 focus:ring-[#209dd7] disabled:cursor-not-allowed disabled:opacity-60"
             value={documentType ?? ""}
             onChange={(e) => e.target.value && switchDocument(e.target.value)}
+            // Disabled while a chat request is in flight: the response applies
+            // documentType/form for the document the request was sent against,
+            // and would silently revert a mid-flight manual switch.
+            disabled={chatBusy}
           >
             <option value="" disabled>
               Choose a document…

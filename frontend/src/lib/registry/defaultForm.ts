@@ -1,4 +1,4 @@
-import { DocumentDefinition, DocumentFormData, PARTY_SUBFIELDS } from "./types";
+import { DocumentDefinition, DocumentFormData, FieldDefinition, PARTY_SUBFIELDS } from "./types";
 
 function termDefault(value: string | undefined, firstVariant: string): [string, string] {
   if (value && value.includes(":")) {
@@ -33,6 +33,16 @@ export function defaultFormData(definition: DocumentDefinition): DocumentFormDat
   return form;
 }
 
+function validForField(field: FieldDefinition, key: string, value: string): boolean {
+  if (field.kind === "date") return /^\d{4}-\d{2}-\d{2}$/.test(value);
+  if (field.kind === "choice") return (field.options ?? []).includes(value);
+  if (field.kind === "term") {
+    if (key.endsWith(".variant")) return (field.variants ?? []).some((v) => v.id === value);
+    return /^\d+$/.test(value) && Number(value) >= 1;
+  }
+  return true;
+}
+
 /**
  * Start a switched-to document from its defaults, keeping any values the old
  * form already collected under the same key (party info, shared field ids).
@@ -43,8 +53,16 @@ export function carryOverFields(
   target: DocumentDefinition
 ): DocumentFormData {
   const form = defaultFormData(target);
+  const fieldsByKey = new Map<string, FieldDefinition>();
+  for (const field of target.fields) {
+    const keys =
+      field.kind === "term" ? [`${field.id}.variant`, `${field.id}.years`] : [field.id];
+    for (const key of keys) fieldsByKey.set(key, field);
+  }
   for (const key of Object.keys(form)) {
-    if (oldForm[key]) form[key] = oldForm[key];
+    const value = oldForm[key];
+    const field = fieldsByKey.get(key);
+    if (value && (!field || validForField(field, key, value))) form[key] = value;
   }
   return form;
 }

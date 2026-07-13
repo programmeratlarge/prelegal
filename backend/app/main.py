@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import Settings, load_settings
 from app.db import init_db
+from app.registry import load_registry
 from app.routers import auth, chat
 
 
@@ -17,6 +18,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI):
         app.state.settings = settings
         app.state.db = init_db(settings)
+        # Fail fast on a missing/invalid registry (e.g. a broken Docker COPY)
+        # instead of surfacing it on the first chat request.
+        load_registry()
         yield
         app.state.db.connection.close()
 

@@ -788,7 +788,7 @@
           "multiline": true
         },
         {
-          "id": "paymentProcess",
+          "id": "paymentTerms",
           "kind": "text",
           "label": "Payment Process",
           "guidance": "How payments between the parties are made, e.g. \"invoiced monthly, due in 30 days\".",

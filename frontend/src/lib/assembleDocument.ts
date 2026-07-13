@@ -15,6 +15,7 @@ import {
 import {
   DocumentDefinition,
   DocumentFormData,
+  PARTY_SUBFIELDS,
   PartySubfield,
 } from "./registry/types";
 
@@ -65,12 +66,9 @@ export function assembleDocument(
     })),
     parties: definition.roles.map((role) => ({
       label: role.label,
-      values: {
-        name: form[`${role.id}.name`] ?? "",
-        title: form[`${role.id}.title`] ?? "",
-        company: form[`${role.id}.company`] ?? "",
-        noticeAddress: form[`${role.id}.noticeAddress`] ?? "",
-      },
+      values: Object.fromEntries(
+        PARTY_SUBFIELDS.map((sub) => [sub, form[`${role.id}.${sub}`] ?? ""])
+      ) as Record<PartySubfield, string>,
     })),
     sections: parsed.sections.map(assembleSection),
     attribution:

@@ -15,6 +15,17 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+CREATE TABLE documents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    document_type TEXT NOT NULL,
+    form_json TEXT NOT NULL DEFAULT '{}',
+    messages_json TEXT NOT NULL DEFAULT '[]',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_documents_user_updated ON documents (user_id, updated_at DESC);
 """
 
 
@@ -36,6 +47,7 @@ def init_db(settings: Settings) -> Database:
 
     connection = sqlite3.connect(settings.db_path, check_same_thread=False)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
     connection.executescript(SCHEMA_SQL)
     connection.commit()
     return Database(connection=connection, lock=threading.Lock())

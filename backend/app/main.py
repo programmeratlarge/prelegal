@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import Settings, load_settings
 from app.db import init_db
 from app.registry import load_registry
-from app.routers import auth, chat
+from app.routers import auth, chat, documents
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -31,6 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # the StaticFiles catch-all.
     app.include_router(auth.router, prefix="/api")
     app.include_router(chat.router, prefix="/api")
+    app.include_router(documents.router, prefix="/api")
 
     if settings.static_dir.exists():
         app.mount(

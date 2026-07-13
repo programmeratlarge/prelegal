@@ -1,14 +1,19 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { assembleDocument, formatPartyName } from "@/lib/assembleDocument";
 import { ChatError, ChatMessage, sendChatMessage } from "@/lib/chatClient";
+import { getDocument } from "@/lib/documentsClient";
 import { ParsedDocument } from "@/lib/documentTree";
-import { carryOverFields, defaultFormData } from "@/lib/registry/defaultForm";
+import { carryOverFields } from "@/lib/registry/defaultForm";
 import { DocumentDefinition, DocumentFormData } from "@/lib/registry/types";
+import { SaveStatus, useDocumentAutosave } from "@/lib/useDocumentAutosave";
 import ChatPanel from "./ChatPanel";
 import DocumentForm from "./DocumentForm";
 import DocumentPreview from "./DocumentPreview";
+import Button from "./ui/Button";
+import { inputClass } from "./ui/Field";
+import LoadingState from "./ui/LoadingState";
 
 export interface DocumentBundle {
   definition: DocumentDefinition;
@@ -35,8 +40,28 @@ function slugify(value: string): string {
 
 function tabClass(active: boolean): string {
   return active
-    ? "border-b-2 border-[#209dd7] px-3 py-1.5 text-sm font-semibold text-[#032147]"
-    : "border-b-2 border-transparent px-3 py-1.5 text-sm font-medium text-[#888888] hover:text-[#032147]";
+    ? "border-b-2 border-brand-blue px-3 py-1.5 text-sm font-semibold text-brand-navy"
+    : "border-b-2 border-transparent px-3 py-1.5 text-sm font-medium text-brand-gray hover:text-brand-navy";
+}
+
+function SaveStatusPill({ status, onRetry }: { status: SaveStatus; onRetry: () => void }) {
+  if (status === "idle") return null;
+  if (status === "error") {
+    return (
+      <button
+        type="button"
+        onClick={onRetry}
+        className="text-xs font-medium text-red-600 hover:underline"
+      >
+        Couldn&apos;t save — retry
+      </button>
+    );
+  }
+  return (
+    <span className="text-xs text-brand-gray">
+      {status === "saving" ? "Saving…" : "All changes saved"}
+    </span>
+  );
 }
 
 export default function DocumentCreator({ documents }: DocumentCreatorProps) {
@@ -49,7 +74,31 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
   ]);
   const [chatBusy, setChatBusy] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
+  const [resuming, setResuming] = useState(
+    () => typeof window !== "undefined" && new URLSearchParams(window.location.search).has("doc")
+  );
   const previewRef = useRef<HTMLDivElement>(null);
+  const autosave = useDocumentAutosave();
+
+  // Resume a saved document when opened as /?doc=<id> (always via hard
+  // navigation, so a mount-time read of the query string is reliable).
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("doc");
+    if (!param) return;
+    getDocument(Number(param))
+      .then((detail) => {
+        setDocumentType(detail.documentType);
+        setForm(detail.form);
+        if (detail.messages.length > 0) setMessages(detail.messages);
+        autosave.setResumedId(detail.id);
+      })
+      .catch(() => {
+        // Deleted or foreign id: fall back to a clean slate.
+        window.history.replaceState(null, "", "/");
+      })
+      .finally(() => setResuming(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const active = documents.find((bundle) => bundle.definition.id === documentType) ?? null;
 
@@ -61,15 +110,18 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
   function switchDocument(id: string) {
     const target = documents.find((bundle) => bundle.definition.id === id);
     if (!target || id === documentType) return;
-    setDocumentType(id);
-    setForm(carryOverFields(form, target.definition));
-    setMessages((current) => [
-      ...current,
+    const nextForm = carryOverFields(form, target.definition);
+    const nextMessages: ChatMessage[] = [
+      ...messages,
       {
         role: "assistant",
         content: `Let's draft your ${target.definition.title}. You can fill it in here in chat or hand-edit any field on the Form tab.`,
       },
-    ]);
+    ];
+    setDocumentType(id);
+    setForm(nextForm);
+    setMessages(nextMessages);
+    autosave.save({ documentType: id, form: nextForm, messages: nextMessages }, { immediate: true });
   }
 
   async function handleSend(text: string) {
@@ -79,9 +131,19 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
     setChatError(null);
     try {
       const result = await sendChatMessage(nextMessages, documentType, form);
-      setMessages([...nextMessages, { role: "assistant", content: result.reply }]);
+      const withReply: ChatMessage[] = [
+        ...nextMessages,
+        { role: "assistant", content: result.reply },
+      ];
+      setMessages(withReply);
       setDocumentType(result.documentType);
       setForm(result.form);
+      if (result.documentType) {
+        autosave.save(
+          { documentType: result.documentType, form: result.form, messages: withReply },
+          { immediate: true }
+        );
+      }
     } catch (error) {
       setChatError(
         error instanceof ChatError && error.status !== 401
@@ -90,6 +152,13 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
       );
     } finally {
       setChatBusy(false);
+    }
+  }
+
+  function handleFormChange(next: DocumentFormData) {
+    setForm(next);
+    if (documentType) {
+      autosave.save({ documentType, form: next, messages });
     }
   }
 
@@ -107,14 +176,18 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
     }
   }
 
+  if (resuming) {
+    return <LoadingState>Loading your document…</LoadingState>;
+  }
+
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 lg:grid-cols-[minmax(0,380px)_1fr]">
       <div>
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h1 className="shrink-0 text-xl font-bold text-[#032147]">Document Creator</h1>
+          <h1 className="shrink-0 text-xl font-bold text-brand-navy">Document Creator</h1>
           <select
             aria-label="Document type"
-            className="w-full min-w-0 rounded-md border border-slate-300 px-2 py-1.5 text-sm shadow-sm focus:border-[#209dd7] focus:outline-none focus:ring-1 focus:ring-[#209dd7] disabled:cursor-not-allowed disabled:opacity-60"
+            className={`${inputClass} min-w-0 disabled:cursor-not-allowed disabled:opacity-60`}
             value={documentType ?? ""}
             onChange={(e) => e.target.value && switchDocument(e.target.value)}
             // Disabled while a chat request is in flight: the response applies
@@ -132,40 +205,42 @@ export default function DocumentCreator({ documents }: DocumentCreatorProps) {
             ))}
           </select>
         </div>
-        <div className="mb-4 flex border-b border-slate-200">
-          <button type="button" onClick={() => setMode("chat")} className={tabClass(mode === "chat")}>
-            Chat
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("form")}
-            className={tabClass(mode === "form")}
-            disabled={!active}
-          >
-            Form
-          </button>
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200">
+          <div className="flex">
+            <button type="button" onClick={() => setMode("chat")} className={tabClass(mode === "chat")}>
+              Chat
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("form")}
+              className={tabClass(mode === "form")}
+              disabled={!active}
+            >
+              Form
+            </button>
+          </div>
+          <SaveStatusPill status={autosave.status} onRetry={autosave.retry} />
         </div>
         {mode === "chat" || !active ? (
           <ChatPanel messages={messages} busy={chatBusy} error={chatError} onSend={handleSend} />
         ) : (
-          <DocumentForm definition={active.definition} value={form} onChange={setForm} />
+          <DocumentForm definition={active.definition} value={form} onChange={handleFormChange} />
         )}
-        <button
-          type="button"
+        <Button
           onClick={handleDownload}
           disabled={downloading || !active}
-          className="mt-4 w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-4 w-full"
         >
           {downloading ? "Preparing PDF…" : "Download PDF"}
-        </button>
+        </Button>
       </div>
       <div>
         {assembled ? (
           <DocumentPreview ref={previewRef} document={assembled} />
         ) : (
           <div className="mx-auto flex max-w-3xl flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white p-12 text-center">
-            <p className="text-lg font-semibold text-[#032147]">No document selected yet</p>
-            <p className="mt-2 max-w-md text-sm text-[#888888]">
+            <p className="text-lg font-semibold text-brand-navy">No document selected yet</p>
+            <p className="mt-2 max-w-md text-sm text-brand-gray">
               Tell the assistant what you need, or pick one of the {documents.length} supported
               documents from the menu — the live preview will appear here.
             </p>

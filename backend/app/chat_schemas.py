@@ -8,16 +8,12 @@ Outputs models are built per document type in app.patch_models.
 
 from __future__ import annotations
 
-from typing import Literal
-
 from pydantic import BaseModel, Field, field_validator
 
 from app import registry
+from app.schemas import ChatMessage
 
-
-class ChatMessage(BaseModel):
-    role: Literal["user", "assistant"]
-    content: str
+__all__ = ["ChatMessage", "ChatRequest", "ChatResponse"]
 
 
 class ChatRequest(BaseModel):

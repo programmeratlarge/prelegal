@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChatMessage } from "@/lib/chatClient";
+import Button from "./ui/Button";
+import { inputClass } from "./ui/Field";
 
 interface ChatPanelProps {
   messages: ChatMessage[];
@@ -38,7 +40,7 @@ export default function ChatPanel({ messages, busy, error, onSend }: ChatPanelPr
             <div
               className={
                 message.role === "user"
-                  ? "max-w-[85%] rounded-lg bg-[#032147] px-3 py-2 text-sm text-white"
+                  ? "max-w-[85%] rounded-lg bg-brand-navy px-3 py-2 text-sm text-white"
                   : "max-w-[85%] rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-900"
               }
             >
@@ -48,7 +50,7 @@ export default function ChatPanel({ messages, busy, error, onSend }: ChatPanelPr
         ))}
         {busy && (
           <div className="flex justify-start">
-            <div className="max-w-[85%] rounded-lg bg-slate-100 px-3 py-2 text-sm text-[#888888]">
+            <div className="max-w-[85%] rounded-lg bg-slate-100 px-3 py-2 text-sm text-brand-gray">
               Thinking…
             </div>
           </div>
@@ -63,19 +65,15 @@ export default function ChatPanel({ messages, busy, error, onSend }: ChatPanelPr
 
       <form onSubmit={handleSubmit} className="flex gap-2 border-t border-slate-200 p-3">
         <input
-          className="w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-[#209dd7] focus:outline-none focus:ring-1 focus:ring-[#209dd7]"
+          className={inputClass}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your answer…"
           disabled={busy}
         />
-        <button
-          type="submit"
-          disabled={busy || !input.trim()}
-          className="rounded-md bg-[#753991] px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-        >
+        <Button type="submit" disabled={busy || !input.trim()}>
           Send
-        </button>
+        </Button>
       </form>
     </div>
   );

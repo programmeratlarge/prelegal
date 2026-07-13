@@ -6,6 +6,7 @@ import {
   FieldDefinition,
   PartyRole,
 } from "@/lib/registry/types";
+import { inputClass, labelClass } from "./ui/Field";
 
 interface DocumentFormProps {
   definition: DocumentDefinition;
@@ -13,11 +14,8 @@ interface DocumentFormProps {
   onChange: (next: DocumentFormData) => void;
 }
 
-const inputClass =
-  "w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500";
-const labelClass = "block text-sm font-medium text-slate-700 mb-1";
-const fieldsetClass = "space-y-4 rounded-lg border border-slate-200 p-4";
-const legendClass = "px-1 text-sm font-semibold text-slate-900";
+const fieldsetClass = "space-y-4 rounded-lg border border-slate-200 bg-white p-4";
+const legendClass = "px-1 text-sm font-semibold text-brand-navy";
 
 function PartyFields({
   role,
@@ -72,6 +70,7 @@ function TermField({
         <label key={variant.id} className="flex items-center gap-2 text-sm">
           <input
             type="radio"
+            className="accent-brand-purple"
             checked={activeVariant === variant.id}
             onChange={() => onSet(`${field.id}.variant`, variant.id)}
           />

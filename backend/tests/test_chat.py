@@ -4,6 +4,7 @@ import pytest
 
 import app.routers.chat as chat_router
 from app import patch_models, registry
+from tests.conftest import signed_in
 
 
 def nda_form() -> dict:
@@ -26,14 +27,6 @@ def chat_request(**overrides) -> dict:
 def fake_turn(document_id: str | None, **data):
     definition = registry.get_document(document_id) if document_id else None
     return patch_models.build_chat_turn_model(definition).model_validate(data)
-
-
-def signed_in(client):
-    client.post(
-        "/api/signup",
-        json={"email": "chat@example.com", "password": "correct-horse"},
-    )
-    return client
 
 
 def test_chat_requires_authentication(client):

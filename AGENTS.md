@@ -8,7 +8,7 @@ The available documents are covered in the catalog.json file in the project root
 
 @catalog.json
 
-All 11 document types in the catalog are supported, draftable via AI chat or a schema-driven form, gated behind user authentication. Document persistence is not yet implemented — see Implementation status below.
+All 11 document types in the catalog are supported, draftable via AI chat or a schema-driven form, gated behind user authentication. Drafts auto-save per user and can be resumed from a My Documents page (the database is intentionally ephemeral — reset on every server restart). See Implementation status below.
 
 ## Development process
 
@@ -56,9 +56,11 @@ Backend available at http://localhost:8000
 
 ## Implementation status
 
-As of 2026-07-13 (PL-6 merged via PR #7):
+As of 2026-07-13 (PL-7, persistence & polish):
 
 **Implemented**
+- **Document persistence** (PL-7): `documents` table (`app/db.py`) + CRUD router (`app/routers/documents.py`) storing full drafting snapshots (documentType + flat form + chat transcript) per user; titles are derived at read time (`app/documents.py`), never stored. The frontend auto-saves (single-flight, coalesce-to-latest hook `lib/useDocumentAutosave.ts`: immediate on chat turns/type switches, debounced on form edits), `/documents/` lists drafts with open/delete, and `/?doc=<id>` resumes full editing including chat history. Unknown and foreign document ids both 404 (no existence leak). Chat (`/api/chat`) remains fully stateless — the client is the only save path.
+- **SaaS polish** (PL-7): brand palette as Tailwind `@theme` tokens (`globals.css` — the only place the hex values may appear), § BrandMark, AppShell header (wordmark, nav, user email, sign out), app-wide footer with the legal disclaimer, per-page metadata titles, polished login (field-level validation, confirm-password on signup), and a DRAFT notice rendered inside the document preview so it appears in every downloaded PDF. Hard navigation (plain anchors / `window.location`) is the app-wide pattern — pages remount and re-read their query string.
 - **Document registry** (PL-6): `registry/documents.json` is the single source of truth for all 11 document types — party roles, fields (kinds: text/date/money/choice/term), per-field LLM guidance, and template span bindings. Loaded by the backend at runtime (`app/registry/`) and by the frontend at build time (`lib/registry/`). Registry↔template drift is blocked by `tests/test_registry.py` (every `*_link` span in every template must be claimed by exactly one role/field, and vice versa).
 - **AI chat drafting for all documents** (PL-5/PL-6): chat starts with no document selected; the LLM picks the `documentType` from the user's request (declining unsupported documents and offering the closest match), fills fields turn by turn via Structured Outputs, and can switch documents mid-chat with party/shared-field carry-over (`app/form_merge.py`). The Structured Outputs response model is generated per document from the registry (`app/patch_models.py`), so the LLM cannot emit unknown fields or invalid choice values. Forms are flat string maps on the wire (see `app/registry/models.py` for key conventions). A dropdown allows manual document selection/switching too.
 - **Generic renderer**: one template parser (`lib/documentTree.ts`) handles both the NDA's flat clauses and the other templates' nested lists with `header_2/header_3` spans; `lib/resolveFieldSpans.ts` substitutes all five `*_link` span classes (possessive-aware); `DocumentForm.tsx`/`DocumentPreview.tsx` render any registry document (schema-driven form, generated cover block, N-party signature block, PDF download).
@@ -66,8 +68,5 @@ As of 2026-07-13 (PL-6 merged via PR #7):
 - **Frontend serving**: Next.js is built as a static export (`output: "export"`, `trailingSlash: true`) and served by FastAPI via a `StaticFiles` mount registered after the API routes. `/login/` page (signup/signin) gates the NDA creator through the client-side `AuthGate` component.
 - **Docker**: multi-stage root `Dockerfile` (Node builds the static export → Python/uv runtime), single image, port 8000. Root `.env` is passed via `--env-file`.
 - **Scripts** (`scripts/`): the six start/stop scripts listed above (start always rebuilds the image), plus `smoke-test.sh`/`smoke-test.ps1` which build, run, curl-verify, and tear down.
-- **Tests**: `backend/tests/` — 126 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over validation, and registry↔template↔catalog integrity. Run with `uv run pytest` from `backend/`.
-
-**Not yet implemented**
-- Document persistence (no documents table; nothing is saved server-side).
+- **Tests**: `backend/tests/` — 155 pytest cases covering auth flows, cookie tampering, static/API route precedence, the chat endpoint (selection, switching, all 11 document types), form merging/carry-over validation, registry↔template↔catalog integrity, and the documents API (CRUD, ownership isolation, derived titles, per-type round-trips). Run with `uv run pytest` from `backend/`.
 

@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
+import AppShell from "@/components/AppShell";
 import AuthGate from "@/components/AuthGate";
-import AuthHeader from "@/components/AuthHeader";
 import DocumentCreator, { DocumentBundle } from "@/components/DocumentCreator";
 import { parseDocumentBody } from "@/lib/documentTree";
 import { loadTemplateFile } from "@/lib/loadTemplates";
 import { loadDocumentRegistry } from "@/lib/registry/loadRegistry";
+
+export const metadata: Metadata = {
+  title: "Document Creator",
+};
 
 export default function Home() {
   // Build time (static export): every template is parsed here and shipped as
@@ -14,11 +19,10 @@ export default function Home() {
   }));
 
   return (
-    <main className="min-h-screen bg-slate-100 py-10">
-      <AuthGate>
-        <AuthHeader />
+    <AuthGate>
+      <AppShell>
         <DocumentCreator documents={documents} />
-      </AuthGate>
-    </main>
+      </AppShell>
+    </AuthGate>
   );
 }

@@ -1,4 +1,4 @@
-import { NdaFormData } from "./ndaSchema";
+import { DocumentFormData } from "./registry/types";
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -7,7 +7,8 @@ export interface ChatMessage {
 
 export interface ChatResult {
   reply: string;
-  form: NdaFormData;
+  documentType: string | null;
+  form: DocumentFormData;
 }
 
 export class ChatError extends Error {
@@ -21,13 +22,14 @@ export class ChatError extends Error {
 
 export async function sendChatMessage(
   messages: ChatMessage[],
-  form: NdaFormData
+  documentType: string | null,
+  form: DocumentFormData
 ): Promise<ChatResult> {
   const response = await fetch("/api/chat", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ documentType: "mutual-nda", messages, form }),
+    body: JSON.stringify({ documentType, messages, form }),
   });
 
   if (!response.ok) {

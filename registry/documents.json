@@ -1,0 +1,1050 @@
+{
+  "documentTypes": [
+    {
+      "id": "mutual-nda",
+      "title": "Mutual Non-Disclosure Agreement",
+      "description": "A mutual non-disclosure agreement covering the use, protection, and return of confidential information exchanged between two parties.",
+      "templateFile": "mutual-nda-standard-terms.md",
+      "attribution": "Common Paper Mutual Non-Disclosure Agreement (Version 1.0)",
+      "roles": [
+        { "id": "party1", "label": "Party 1", "spanLabels": [] },
+        { "id": "party2", "label": "Party 2", "spanLabels": [] }
+      ],
+      "fields": [
+        {
+          "id": "purpose",
+          "kind": "text",
+          "label": "Purpose",
+          "guidance": "Why the parties are exchanging confidential information.",
+          "spanLabels": ["Purpose"],
+          "multiline": true,
+          "default": "Evaluating whether to enter into a business relationship with the other party."
+        },
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "The date the NDA takes effect.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "mndaTerm",
+          "kind": "term",
+          "label": "MNDA Term",
+          "guidance": "How long the agreement itself runs.",
+          "spanLabels": ["MNDA Term"],
+          "variants": [
+            {
+              "id": "expires",
+              "label": "Expires after a set number of years",
+              "hasYears": true,
+              "template": "Expires {years} from the Effective Date."
+            },
+            {
+              "id": "untilTerminated",
+              "label": "Continues until terminated",
+              "hasYears": false,
+              "template": "Continues until terminated in accordance with the terms of the MNDA."
+            }
+          ],
+          "default": "expires:1"
+        },
+        {
+          "id": "confidentialityTerm",
+          "kind": "term",
+          "label": "Term of Confidentiality",
+          "guidance": "How long confidentiality obligations last after disclosure.",
+          "spanLabels": ["Term of Confidentiality"],
+          "variants": [
+            {
+              "id": "years",
+              "label": "A set number of years",
+              "hasYears": true,
+              "template": "{years} from the Effective Date, but in the case of trade secrets until Confidential Information is no longer considered a trade secret under applicable laws."
+            },
+            {
+              "id": "perpetuity",
+              "label": "In perpetuity",
+              "hasYears": false,
+              "template": "In perpetuity."
+            }
+          ],
+          "default": "years:1"
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "jurisdiction",
+          "kind": "text",
+          "label": "Jurisdiction",
+          "guidance": "Where disputes are heard, e.g. \"New Castle County, DE\".",
+          "spanLabels": ["Jurisdiction"]
+        },
+        {
+          "id": "modifications",
+          "kind": "text",
+          "label": "MNDA Modifications",
+          "guidance": "Optional free-text modifications to the standard terms; leave unset unless the user asks for changes.",
+          "spanLabels": [],
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "id": "cloud-service-agreement",
+      "title": "Cloud Service Agreement",
+      "description": "A SaaS/cloud service subscription, covering access and use, support, payment, data privacy, warranties, liability, and termination.",
+      "templateFile": "cloud-service-agreement.md",
+      "attribution": "Common Paper Cloud Service Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the Framework Terms start.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "subscriptionPeriod",
+          "kind": "text",
+          "label": "Subscription Period",
+          "guidance": "The length of the subscription term, e.g. \"12 months\".",
+          "spanLabels": ["Subscription Period", "Subscription Periods"]
+        },
+        {
+          "id": "orderDate",
+          "kind": "date",
+          "label": "Order Date",
+          "guidance": "The date the Order Form is signed.",
+          "spanLabels": ["Order Date"]
+        },
+        {
+          "id": "nonRenewalNoticeDate",
+          "kind": "text",
+          "label": "Non-Renewal Notice Date",
+          "guidance": "The deadline for giving notice of non-renewal, e.g. \"30 days before the end of the current Subscription Period\".",
+          "spanLabels": ["Non-Renewal Notice Date"]
+        },
+        {
+          "id": "technicalSupport",
+          "kind": "text",
+          "label": "Technical Support",
+          "guidance": "A short description of the support the Provider will give, e.g. \"Business-hours email support\".",
+          "spanLabels": ["Technical Support"]
+        },
+        {
+          "id": "useLimitations",
+          "kind": "text",
+          "label": "Use Limitations",
+          "guidance": "Any usage limits (seats, API calls, storage, etc.). Leave unset if none.",
+          "spanLabels": ["Use Limitations"]
+        },
+        {
+          "id": "paymentProcess",
+          "kind": "choice",
+          "label": "Payment Process",
+          "guidance": "Whether the Customer is invoiced or charged automatically.",
+          "spanLabels": ["Payment Process"],
+          "options": ["invoicing", "automatic payment"]
+        },
+        {
+          "id": "dpa",
+          "kind": "text",
+          "label": "DPA",
+          "guidance": "A reference to the parties' Data Processing Agreement, e.g. \"the DPA attached as Exhibit A\". Leave unset if none.",
+          "spanLabels": ["DPA"]
+        },
+        {
+          "id": "additionalWarranties",
+          "kind": "text",
+          "label": "Additional Warranties",
+          "guidance": "Any extra warranties beyond the standard ones. Leave unset if none.",
+          "spanLabels": ["Additional Warranties"]
+        },
+        {
+          "id": "generalCapAmount",
+          "kind": "money",
+          "label": "General Cap Amount",
+          "guidance": "The overall liability cap, e.g. \"the fees paid in the 12 months before the claim\" or a fixed dollar amount.",
+          "spanLabels": ["General Cap Amount"]
+        },
+        {
+          "id": "increasedCapAmount",
+          "kind": "money",
+          "label": "Increased Cap Amount",
+          "guidance": "The higher liability cap that applies to Increased Claims, e.g. \"2x the General Cap Amount\".",
+          "spanLabels": ["Increased Cap Amount"]
+        },
+        {
+          "id": "increasedClaims",
+          "kind": "text",
+          "label": "Increased Claims",
+          "guidance": "Which categories of claims get the increased cap, e.g. \"breach of confidentiality\". Leave unset if none.",
+          "spanLabels": ["Increased Claims"]
+        },
+        {
+          "id": "unlimitedClaims",
+          "kind": "text",
+          "label": "Unlimited Claims",
+          "guidance": "Which categories of claims are excluded from any liability cap. Leave unset if none.",
+          "spanLabels": ["Unlimited Claims"]
+        },
+        {
+          "id": "providerCoveredClaims",
+          "kind": "text",
+          "label": "Provider Covered Claims",
+          "guidance": "The third-party claims the Provider will defend the Customer against, e.g. \"claims that the Cloud Service infringes intellectual property rights\".",
+          "spanLabels": ["Provider Covered Claim", "Provider Covered Claims"]
+        },
+        {
+          "id": "customerCoveredClaims",
+          "kind": "text",
+          "label": "Customer Covered Claims",
+          "guidance": "The third-party claims the Customer will defend the Provider against, e.g. \"claims arising from Customer Content\".",
+          "spanLabels": ["Customer Covered Claim", "Customer Covered Claims"]
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        }
+      ]
+    },
+    {
+      "id": "design-partner-agreement",
+      "title": "Design Partner Agreement",
+      "description": "Grants an early-access design partner use of a product in exchange for feedback that helps develop and improve it.",
+      "templateFile": "design-partner-agreement.md",
+      "attribution": "Common Paper Design Partner Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Partner", "spanLabels": ["Partner"] }
+      ],
+      "fields": [
+        {
+          "id": "program",
+          "kind": "text",
+          "label": "Program",
+          "guidance": "A short description of the design partner program: what product or features the Partner gets early access to.",
+          "spanLabels": ["Program"],
+          "multiline": true
+        },
+        {
+          "id": "term",
+          "kind": "text",
+          "label": "Term",
+          "guidance": "How long the agreement runs, e.g. \"6 months\".",
+          "spanLabels": ["Term"]
+        },
+        {
+          "id": "fees",
+          "kind": "money",
+          "label": "Fees",
+          "guidance": "The fees the Partner pays, e.g. \"$0\" or \"$500 per month\".",
+          "spanLabels": ["Fees"]
+        },
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the agreement starts.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        },
+        {
+          "id": "noticeAddress",
+          "kind": "text",
+          "label": "Notice Address",
+          "guidance": "Email or postal address each party uses for legal notices.",
+          "spanLabels": ["Notice Address"]
+        }
+      ]
+    },
+    {
+      "id": "service-level-agreement",
+      "title": "Service Level Agreement",
+      "description": "Defines uptime and support response time targets for a cloud service, along with the service credits and remedies available if targets are missed.",
+      "templateFile": "service-level-agreement.md",
+      "attribution": "Common Paper Service Level Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "targetUptime",
+          "kind": "text",
+          "label": "Target Uptime",
+          "guidance": "The uptime target as a percentage, e.g. \"99.9%\".",
+          "spanLabels": ["Target Uptime"]
+        },
+        {
+          "id": "targetResponseTime",
+          "kind": "text",
+          "label": "Target Response Time",
+          "guidance": "How quickly the Provider responds to support requests, e.g. \"4 business hours\".",
+          "spanLabels": ["Target Response Time"]
+        },
+        {
+          "id": "supportChannel",
+          "kind": "text",
+          "label": "Support Channel",
+          "guidance": "How the Customer contacts support, e.g. \"email to support@provider.com\".",
+          "spanLabels": ["Support Channel"]
+        },
+        {
+          "id": "uptimeCredit",
+          "kind": "text",
+          "label": "Uptime Credit",
+          "guidance": "The service credit if Target Uptime is missed, e.g. \"5% of monthly fees\".",
+          "spanLabels": ["Uptime Credit"]
+        },
+        {
+          "id": "responseTimeCredit",
+          "kind": "text",
+          "label": "Response Time Credit",
+          "guidance": "The service credit if the Target Response Time is missed, e.g. \"2% of monthly fees\".",
+          "spanLabels": ["Response Time Credit"]
+        },
+        {
+          "id": "scheduledDowntime",
+          "kind": "text",
+          "label": "Scheduled Downtime",
+          "guidance": "The allowed maintenance window, e.g. \"up to 4 hours per month with 48 hours notice\".",
+          "spanLabels": ["Scheduled Downtime"]
+        },
+        {
+          "id": "subscriptionPeriod",
+          "kind": "text",
+          "label": "Subscription Period",
+          "guidance": "The length of the subscription term this SLA covers, e.g. \"12 months\".",
+          "spanLabels": ["Subscription Period"]
+        }
+      ]
+    },
+    {
+      "id": "professional-services-agreement",
+      "title": "Professional Services Agreement",
+      "description": "Professional services provided under one or more statements of work, covering deliverables, intellectual property, payment, and liability.",
+      "templateFile": "professional-services-agreement.md",
+      "attribution": "Common Paper Professional Services Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "deliverables",
+          "kind": "text",
+          "label": "Deliverables",
+          "guidance": "What the Provider will deliver under the statement of work.",
+          "spanLabels": ["Deliverable", "Deliverables"],
+          "multiline": true
+        },
+        {
+          "id": "fees",
+          "kind": "money",
+          "label": "Fees",
+          "guidance": "What the Customer pays, e.g. \"$10,000 fixed fee\" or \"$150 per hour\".",
+          "spanLabels": ["Fees"]
+        },
+        {
+          "id": "paymentPeriod",
+          "kind": "text",
+          "label": "Payment Period",
+          "guidance": "When invoices are due, e.g. \"30 days from invoice\".",
+          "spanLabels": ["Payment Period"]
+        },
+        {
+          "id": "sowTerm",
+          "kind": "text",
+          "label": "SOW Term",
+          "guidance": "How long the statement of work runs, e.g. \"3 months from the SOW effective date\".",
+          "spanLabels": ["SOW Term"]
+        },
+        {
+          "id": "rejectionPeriod",
+          "kind": "text",
+          "label": "Rejection Period",
+          "guidance": "How long the Customer has to reject a Deliverable, e.g. \"10 business days\".",
+          "spanLabels": ["Rejection Period"]
+        },
+        {
+          "id": "resubmissionPeriod",
+          "kind": "text",
+          "label": "Resubmission Period",
+          "guidance": "How long the Provider has to fix and resubmit a rejected Deliverable, e.g. \"10 business days\".",
+          "spanLabels": ["Resubmission Period"]
+        },
+        {
+          "id": "customerObligations",
+          "kind": "text",
+          "label": "Customer Obligations",
+          "guidance": "What the Customer must provide or do so the Provider can perform, e.g. access, staff, materials. Leave unset if none.",
+          "spanLabels": ["Customer Obligations"],
+          "multiline": true
+        },
+        {
+          "id": "timeOfAssignment",
+          "kind": "text",
+          "label": "Time of Assignment",
+          "guidance": "When intellectual property in Deliverables transfers to the Customer, e.g. \"upon full payment\".",
+          "spanLabels": ["Time of Assignment"]
+        },
+        {
+          "id": "customerPolicies",
+          "kind": "text",
+          "label": "Customer Policies",
+          "guidance": "Any Customer policies the Provider must follow on site or with Customer systems. Leave unset if none.",
+          "spanLabels": ["Customer Policies"]
+        },
+        {
+          "id": "dpa",
+          "kind": "text",
+          "label": "DPA",
+          "guidance": "A reference to the parties' Data Processing Agreement, e.g. \"the DPA attached as Exhibit A\". Leave unset if none.",
+          "spanLabels": ["DPA"]
+        },
+        {
+          "id": "securityPolicy",
+          "kind": "text",
+          "label": "Security Policy",
+          "guidance": "A reference to the Provider's security policy, e.g. \"the security policy at provider.com/security\". Leave unset if none.",
+          "spanLabels": ["Security Policy"]
+        },
+        {
+          "id": "insuranceMinimums",
+          "kind": "text",
+          "label": "Insurance Minimums",
+          "guidance": "Required insurance coverage, e.g. \"$1M general liability\". Leave unset if none.",
+          "spanLabels": ["Insurance Minimums"]
+        },
+        {
+          "id": "additionalWarranties",
+          "kind": "text",
+          "label": "Additional Warranties",
+          "guidance": "Any extra warranties beyond the standard ones. Leave unset if none.",
+          "spanLabels": ["Additional Warranties"]
+        },
+        {
+          "id": "generalCapAmount",
+          "kind": "money",
+          "label": "General Cap Amount",
+          "guidance": "The overall liability cap, e.g. \"the fees paid in the 12 months before the claim\" or a fixed dollar amount.",
+          "spanLabels": ["General Cap Amount"]
+        },
+        {
+          "id": "increasedCapAmount",
+          "kind": "money",
+          "label": "Increased Cap Amount",
+          "guidance": "The higher liability cap that applies to Increased Claims, e.g. \"2x the General Cap Amount\".",
+          "spanLabels": ["Increased Cap Amount"]
+        },
+        {
+          "id": "increasedClaims",
+          "kind": "text",
+          "label": "Increased Claims",
+          "guidance": "Which categories of claims get the increased cap. Leave unset if none.",
+          "spanLabels": ["Increased Claims"]
+        },
+        {
+          "id": "unlimitedClaims",
+          "kind": "text",
+          "label": "Unlimited Claims",
+          "guidance": "Which categories of claims are excluded from any liability cap. Leave unset if none.",
+          "spanLabels": ["Unlimited Claims"]
+        },
+        {
+          "id": "providerCoveredClaims",
+          "kind": "text",
+          "label": "Provider Covered Claims",
+          "guidance": "The third-party claims the Provider will defend the Customer against.",
+          "spanLabels": ["Provider Covered Claim", "Provider Covered Claims"]
+        },
+        {
+          "id": "customerCoveredClaims",
+          "kind": "text",
+          "label": "Customer Covered Claims",
+          "guidance": "The third-party claims the Customer will defend the Provider against.",
+          "spanLabels": ["Customer Covered Claim", "Customer Covered Claims"]
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        },
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the agreement starts.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        }
+      ]
+    },
+    {
+      "id": "data-processing-agreement",
+      "title": "Data Processing Agreement",
+      "description": "Governs the processing of personal data between a controller/processor and a processor/subprocessor, including international data transfer mechanisms and security incident response.",
+      "templateFile": "data-processing-agreement.md",
+      "attribution": "Common Paper Data Processing Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "agreement",
+          "kind": "text",
+          "label": "Agreement",
+          "guidance": "The underlying agreement this DPA supplements, e.g. \"the Cloud Service Agreement between the parties dated January 1, 2026\".",
+          "spanLabels": ["Agreement"]
+        },
+        {
+          "id": "categoriesOfPersonalData",
+          "kind": "text",
+          "label": "Categories of Personal Data",
+          "guidance": "The types of personal data processed, e.g. \"names, email addresses, usage data\".",
+          "spanLabels": ["Categories of Personal Data"],
+          "multiline": true
+        },
+        {
+          "id": "categoriesOfDataSubjects",
+          "kind": "text",
+          "label": "Categories of Data Subjects",
+          "guidance": "Whose personal data is processed, e.g. \"Customer's end users and employees\".",
+          "spanLabels": ["Categories of Data Subjects"],
+          "multiline": true
+        },
+        {
+          "id": "specialCategoryData",
+          "kind": "text",
+          "label": "Special Category Data",
+          "guidance": "Any GDPR special category data processed (health, biometric, etc.). Leave unset if none.",
+          "spanLabels": ["Special Category Data"]
+        },
+        {
+          "id": "specialCategoryDataSafeguards",
+          "kind": "text",
+          "label": "Special Category Data Restrictions or Safeguards",
+          "guidance": "Restrictions or safeguards applied to special category data. Leave unset if not applicable.",
+          "spanLabels": ["Special Category Data Restrictions or Safeguards"]
+        },
+        {
+          "id": "frequencyOfTransfer",
+          "kind": "text",
+          "label": "Frequency of Transfer",
+          "guidance": "How often data is transferred, e.g. \"continuous\".",
+          "spanLabels": ["Frequency of Transfer"]
+        },
+        {
+          "id": "natureAndPurposeOfProcessing",
+          "kind": "text",
+          "label": "Nature and Purpose of Processing",
+          "guidance": "What the processing does and why, e.g. \"hosting and providing the cloud service\".",
+          "spanLabels": ["Nature and Purpose of Processing"],
+          "multiline": true
+        },
+        {
+          "id": "durationOfProcessing",
+          "kind": "text",
+          "label": "Duration of Processing",
+          "guidance": "How long processing continues, e.g. \"the term of the Agreement\".",
+          "spanLabels": ["Duration of Processing"]
+        },
+        {
+          "id": "approvedSubprocessors",
+          "kind": "text",
+          "label": "Approved Subprocessors",
+          "guidance": "The approved subprocessors, or where the list is published, e.g. \"listed at provider.com/subprocessors\".",
+          "spanLabels": ["Approved Subprocessors"],
+          "multiline": true
+        },
+        {
+          "id": "governingMemberState",
+          "kind": "text",
+          "label": "Governing Member State",
+          "guidance": "The EU member state whose law governs the Standard Contractual Clauses, e.g. \"Ireland\".",
+          "spanLabels": ["Governing Member State"]
+        },
+        {
+          "id": "securityPolicy",
+          "kind": "text",
+          "label": "Security Policy",
+          "guidance": "A reference to the Provider's security policy, e.g. \"the security policy at provider.com/security\".",
+          "spanLabels": ["Security Policy"]
+        },
+        {
+          "id": "providerSecurityContact",
+          "kind": "text",
+          "label": "Provider Security Contact",
+          "guidance": "Who to contact about security incidents, e.g. \"security@provider.com\".",
+          "spanLabels": ["Provider Security Contact"]
+        }
+      ]
+    },
+    {
+      "id": "software-license-agreement",
+      "title": "Software License Agreement",
+      "description": "Licenses on-premises or installed software, covering license grants, restrictions, updates, warranties, and liability.",
+      "templateFile": "software-license-agreement.md",
+      "attribution": "Common Paper Software License Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the Framework Terms start.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "subscriptionPeriod",
+          "kind": "text",
+          "label": "Subscription Period",
+          "guidance": "The length of the license subscription, e.g. \"12 months\".",
+          "spanLabels": ["Subscription Period", "Subscription Periods"]
+        },
+        {
+          "id": "permittedUses",
+          "kind": "text",
+          "label": "Permitted Uses",
+          "guidance": "What the Customer may use the software for, e.g. \"internal business purposes\".",
+          "spanLabels": ["Permitted Uses"]
+        },
+        {
+          "id": "licenseLimits",
+          "kind": "text",
+          "label": "License Limits",
+          "guidance": "Any limits on the license (seats, installations, environments). Leave unset if none.",
+          "spanLabels": ["License Limits"]
+        },
+        {
+          "id": "paymentProcess",
+          "kind": "choice",
+          "label": "Payment Process",
+          "guidance": "Whether the Customer is invoiced or charged automatically.",
+          "spanLabels": ["Payment Process"],
+          "options": ["invoicing", "automatic payment"]
+        },
+        {
+          "id": "orderDate",
+          "kind": "date",
+          "label": "Order Date",
+          "guidance": "The date the Order Form is signed.",
+          "spanLabels": ["Order Date"]
+        },
+        {
+          "id": "nonRenewalNoticeDate",
+          "kind": "text",
+          "label": "Non-Renewal Notice Date",
+          "guidance": "The deadline for giving notice of non-renewal, e.g. \"30 days before the end of the current Subscription Period\".",
+          "spanLabels": ["Non-Renewal Notice Date"]
+        },
+        {
+          "id": "warrantyPeriod",
+          "kind": "text",
+          "label": "Warranty Period",
+          "guidance": "How long the software warranty lasts, e.g. \"90 days from delivery\".",
+          "spanLabels": ["Warranty Period"]
+        },
+        {
+          "id": "deletionProcedure",
+          "kind": "text",
+          "label": "Deletion Procedure",
+          "guidance": "How the Customer must delete or return the software after termination, e.g. \"delete all copies and certify deletion in writing\".",
+          "spanLabels": ["Deletion Procedure"]
+        },
+        {
+          "id": "additionalWarranties",
+          "kind": "text",
+          "label": "Additional Warranties",
+          "guidance": "Any extra warranties beyond the standard ones. Leave unset if none.",
+          "spanLabels": ["Additional Warranties"]
+        },
+        {
+          "id": "generalCapAmount",
+          "kind": "money",
+          "label": "General Cap Amount",
+          "guidance": "The overall liability cap, e.g. \"the fees paid in the 12 months before the claim\" or a fixed dollar amount.",
+          "spanLabels": ["General Cap Amount"]
+        },
+        {
+          "id": "increasedCapAmount",
+          "kind": "money",
+          "label": "Increased Cap Amount",
+          "guidance": "The higher liability cap that applies to Increased Claims, e.g. \"2x the General Cap Amount\".",
+          "spanLabels": ["Increased Cap Amount"]
+        },
+        {
+          "id": "increasedClaims",
+          "kind": "text",
+          "label": "Increased Claims",
+          "guidance": "Which categories of claims get the increased cap. Leave unset if none.",
+          "spanLabels": ["Increased Claims"]
+        },
+        {
+          "id": "unlimitedClaims",
+          "kind": "text",
+          "label": "Unlimited Claims",
+          "guidance": "Which categories of claims are excluded from any liability cap. Leave unset if none.",
+          "spanLabels": ["Unlimited Claims"]
+        },
+        {
+          "id": "providerCoveredClaims",
+          "kind": "text",
+          "label": "Provider Covered Claims",
+          "guidance": "The third-party claims the Provider will defend the Customer against.",
+          "spanLabels": ["Provider Covered Claim", "Provider Covered Claims"]
+        },
+        {
+          "id": "customerCoveredClaims",
+          "kind": "text",
+          "label": "Customer Covered Claims",
+          "guidance": "The third-party claims the Customer will defend the Provider against.",
+          "spanLabels": ["Customer Covered Claim", "Customer Covered Claims"]
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        }
+      ]
+    },
+    {
+      "id": "partnership-agreement",
+      "title": "Partnership Agreement",
+      "description": "A business partnership arrangement between two companies, including trademark licensing, fees, and confidentiality.",
+      "templateFile": "partnership-agreement.md",
+      "attribution": "Common Paper Partnership Agreement",
+      "roles": [
+        { "id": "party1", "label": "Company", "spanLabels": ["Company"] },
+        { "id": "party2", "label": "Partner", "spanLabels": ["Partner"] }
+      ],
+      "fields": [
+        {
+          "id": "obligations",
+          "kind": "text",
+          "label": "Obligations",
+          "guidance": "What each party will do in the partnership.",
+          "spanLabels": ["Obligations"],
+          "multiline": true
+        },
+        {
+          "id": "paymentProcess",
+          "kind": "text",
+          "label": "Payment Process",
+          "guidance": "How payments between the parties are made, e.g. \"invoiced monthly, due in 30 days\".",
+          "spanLabels": ["Payment Process"]
+        },
+        {
+          "id": "paymentSchedule",
+          "kind": "text",
+          "label": "Payment Schedule",
+          "guidance": "When payments happen, e.g. \"monthly\" or \"quarterly\".",
+          "spanLabels": ["Payment Schedule"]
+        },
+        {
+          "id": "territory",
+          "kind": "text",
+          "label": "Territory",
+          "guidance": "The geographic scope of the partnership, e.g. \"the United States\".",
+          "spanLabels": ["Territory"]
+        },
+        {
+          "id": "endDate",
+          "kind": "date",
+          "label": "End Date",
+          "guidance": "When the partnership ends.",
+          "spanLabels": ["End Date"]
+        },
+        {
+          "id": "brandGuidelines",
+          "kind": "text",
+          "label": "Brand Guidelines",
+          "guidance": "A reference to each party's brand or trademark usage guidelines. Leave unset if none.",
+          "spanLabels": ["Brand Guidelines"]
+        },
+        {
+          "id": "dpa",
+          "kind": "text",
+          "label": "DPA",
+          "guidance": "A reference to the parties' Data Processing Agreement, e.g. \"the DPA attached as Exhibit A\". Leave unset if none.",
+          "spanLabels": ["DPA"]
+        },
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the agreement starts.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "additionalWarranties",
+          "kind": "text",
+          "label": "Additional Warranties",
+          "guidance": "Any extra warranties beyond the standard ones. Leave unset if none.",
+          "spanLabels": ["Additional Warranties"]
+        },
+        {
+          "id": "generalCapAmount",
+          "kind": "money",
+          "label": "General Cap Amount",
+          "guidance": "The overall liability cap, e.g. \"the fees paid in the 12 months before the claim\" or a fixed dollar amount.",
+          "spanLabels": ["General Cap Amount"]
+        },
+        {
+          "id": "increasedCapAmount",
+          "kind": "money",
+          "label": "Increased Cap Amount",
+          "guidance": "The higher liability cap that applies to Increased Claims, e.g. \"2x the General Cap Amount\".",
+          "spanLabels": ["Increased Cap Amount"]
+        },
+        {
+          "id": "increasedClaims",
+          "kind": "text",
+          "label": "Increased Claims",
+          "guidance": "Which categories of claims get the increased cap. Leave unset if none.",
+          "spanLabels": ["Increased Claims"]
+        },
+        {
+          "id": "unlimitedClaims",
+          "kind": "text",
+          "label": "Unlimited Claims",
+          "guidance": "Which categories of claims are excluded from any liability cap. Leave unset if none.",
+          "spanLabels": ["Unlimited Claims"]
+        },
+        {
+          "id": "companyCoveredClaims",
+          "kind": "text",
+          "label": "Company Covered Claims",
+          "guidance": "The third-party claims the Company will defend the Partner against.",
+          "spanLabels": ["Company Covered Claim"]
+        },
+        {
+          "id": "partnerCoveredClaims",
+          "kind": "text",
+          "label": "Partner Covered Claims",
+          "guidance": "The third-party claims the Partner will defend the Company against.",
+          "spanLabels": ["Partner Covered Claim", "Partner Covered Claims"]
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        }
+      ]
+    },
+    {
+      "id": "pilot-agreement",
+      "title": "Pilot Agreement",
+      "description": "A time-limited trial or evaluation of a product before entering into a longer-term definitive agreement.",
+      "templateFile": "pilot-agreement.md",
+      "attribution": "Common Paper Pilot Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "pilotPeriod",
+          "kind": "text",
+          "label": "Pilot Period",
+          "guidance": "How long the pilot runs, e.g. \"60 days\".",
+          "spanLabels": ["Pilot Period"]
+        },
+        {
+          "id": "effectiveDate",
+          "kind": "date",
+          "label": "Effective Date",
+          "guidance": "When the pilot starts.",
+          "spanLabels": ["Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "generalCapAmount",
+          "kind": "money",
+          "label": "General Cap Amount",
+          "guidance": "The overall liability cap, e.g. \"the fees paid under this agreement\" or a fixed dollar amount.",
+          "spanLabels": ["General Cap Amount"]
+        },
+        {
+          "id": "governingLaw",
+          "kind": "text",
+          "label": "Governing Law",
+          "guidance": "The US state whose law governs, e.g. \"Delaware\".",
+          "spanLabels": ["Governing Law"]
+        },
+        {
+          "id": "chosenCourts",
+          "kind": "text",
+          "label": "Chosen Courts",
+          "guidance": "Where disputes are heard, e.g. \"the state and federal courts located in New Castle County, DE\".",
+          "spanLabels": ["Chosen Courts"]
+        },
+        {
+          "id": "noticeAddress",
+          "kind": "text",
+          "label": "Notice Address",
+          "guidance": "Email or postal address each party uses for legal notices.",
+          "spanLabels": ["Notice Address"]
+        }
+      ]
+    },
+    {
+      "id": "business-associate-agreement",
+      "title": "Business Associate Agreement",
+      "description": "Required under HIPAA, governing a business associate's use and protection of protected health information (PHI) on behalf of a covered entity.",
+      "templateFile": "business-associate-agreement.md",
+      "attribution": "Common Paper Business Associate Agreement",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Company", "spanLabels": ["Company"] }
+      ],
+      "fields": [
+        {
+          "id": "agreement",
+          "kind": "text",
+          "label": "Agreement",
+          "guidance": "The underlying services agreement this BAA supplements, e.g. \"the Cloud Service Agreement between the parties dated January 1, 2026\".",
+          "spanLabels": ["Agreement"]
+        },
+        {
+          "id": "baaEffectiveDate",
+          "kind": "date",
+          "label": "BAA Effective Date",
+          "guidance": "When the BAA takes effect.",
+          "spanLabels": ["BAA Effective Date"],
+          "default": "$today"
+        },
+        {
+          "id": "breachNotificationPeriod",
+          "kind": "text",
+          "label": "Breach Notification Period",
+          "guidance": "How quickly the Provider must report a breach of PHI, e.g. \"5 business days\".",
+          "spanLabels": ["Breach Notification Period"]
+        },
+        {
+          "id": "limitations",
+          "kind": "text",
+          "label": "Limitations",
+          "guidance": "Any limitations on how the Provider may use or disclose PHI. Leave unset if none.",
+          "spanLabels": ["Limitations"],
+          "multiline": true
+        }
+      ]
+    },
+    {
+      "id": "ai-addendum",
+      "title": "AI Addendum",
+      "description": "Supplements a product agreement to govern the use of AI/ML features, including input/output ownership, model training restrictions, and AI-specific disclaimers.",
+      "templateFile": "ai-addendum.md",
+      "attribution": "Common Paper AI Addendum",
+      "roles": [
+        { "id": "party1", "label": "Provider", "spanLabels": ["Provider"] },
+        { "id": "party2", "label": "Customer", "spanLabels": ["Customer"] }
+      ],
+      "fields": [
+        {
+          "id": "trainingData",
+          "kind": "text",
+          "label": "Training Data",
+          "guidance": "What Customer data (if any) the Provider may use to train AI models. Leave unset if training is not permitted.",
+          "spanLabels": ["Training Data"],
+          "multiline": true
+        },
+        {
+          "id": "trainingPurposes",
+          "kind": "text",
+          "label": "Training Purposes",
+          "guidance": "Why the Provider may train on that data. Leave unset if training is not permitted.",
+          "spanLabels": ["Training Purposes"],
+          "multiline": true
+        },
+        {
+          "id": "trainingRestrictions",
+          "kind": "text",
+          "label": "Training Restrictions",
+          "guidance": "Any restrictions on the permitted training, e.g. \"data must be aggregated and de-identified\".",
+          "spanLabels": ["Training Restrictions"],
+          "multiline": true
+        },
+        {
+          "id": "improvementRestrictions",
+          "kind": "text",
+          "label": "Improvement Restrictions",
+          "guidance": "Restrictions on using Customer inputs/outputs for product improvement outside training.",
+          "spanLabels": ["Improvement Restrictions"],
+          "multiline": true
+        }
+      ]
+    }
+  ]
+}

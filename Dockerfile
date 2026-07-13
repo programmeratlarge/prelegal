@@ -6,6 +6,7 @@ COPY frontend/package.json frontend/package-lock.json ./frontend/
 RUN --mount=type=cache,target=/root/.npm \
     cd frontend && npm ci
 COPY templates ./templates
+COPY registry ./registry
 COPY frontend ./frontend
 RUN cd frontend && npm run build
 
@@ -18,6 +19,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --no-install-project
 
 COPY backend/app ./app
+# Absolute destination on purpose: app/registry/__init__.py resolves the data
+# as BACKEND_ROOT.parent / "registry", which is /registry inside the image.
+COPY registry /registry
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
